@@ -1,1 +1,146 @@
 
+with open ('blosom.txt','r') as in_file:
+ lines = in_file.read().splitlines()
+ in_file.close
+ Query = ['A','T','A','T','T','C','D','H']
+ threa=3
+
+ #seeds = ['ATC', 'CGA', 'ATC', 'GAT', 'CGA', 'TCG']
+ aminoAcids= {'A':0 ,'R':1,'N':2,'D':3,'C':4,'Q':5,'E':6,'G':6,'H':7,'I':8,'L':9,'K':10,'M':11,'F':12,'P':13,'S':14,'T':15,'W ':16,'Y':17,'V':18,'B':19,'Z':20,'X':21}
+
+wordlength=3
+def getscore(a1,a2):
+    i = aminoAcids[a1]
+    j = aminoAcids[a2]
+
+    return BlosumList[i][j]
+
+Dict_Blosum = {}
+BlosumList = []
+print (lines)
+print(len(lines))
+#score with itself
+for line in lines:
+    temp = [int(i) for i in line.split()]
+    BlosumList.append(temp)
+#print (BlosumList)
+lastscor=[]
+
+for i in range (len(Query)):
+
+   scorelist=[]
+   s= Query[i]
+   scorelist=(getscore(s,s))
+   lastscor.append(scorelist)
+#print(lastscor)
+
+#repetion
+
+
+Query = ['A','T','C','Y','T','C','D','H']
+
+removedtlist=[]
+
+removedtlist.append(Query[0])
+removedtlist.append(Query[1])
+for n in range (0,len(Query)-2,2):
+
+  if(lastscor[n]==lastscor[n+2] & lastscor[n+1]== lastscor[n+3]):
+      removedtlist.append('X')
+      removedtlist.append('X')
+
+  else:
+      removedtlist.append(Query[n+2])
+      removedtlist.append(Query[n+3])
+
+#print(removedtlist)
+Modified=[]
+for o in range (len(Query)):
+    if (removedtlist[o]!= 'X'):
+        Modified.append(Query[o] )
+#print (Modified)
+listofwords=[]
+listofwordso=[]
+#cutting world length
+words=[]
+oppp = ""
+for i in range(len(Modified) - wordlength+ 1):
+    oppp = Modified[i]
+    for j in range(1, wordlength):
+        oppp += Modified[i + j]
+    words.append(oppp)
+print (words)
+print(oppp)
+#seeds
+Threshold = 2
+Seeds = []
+for i in range(0, len(words)):
+    list = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W ', 'Y', 'B']
+    stringside = list(words[i][0])
+    seedcount= list(words[i][0])
+    for k in range(0, len(seedcount)):
+       for j in range(0, len(list)):
+            stringside[k] = list[j]
+            Score = aminoAcids[s[0]][stringside[0]] +aminoAcids[s[1]][stringside[1]] + aminoAcids[s[2]][stringside[2]]
+
+            if Score >= Threshold:
+                Seeds.append(["".join(stringside), words[i][1], Score])
+
+       stringside = seedcount
+print(Seeds)
+
+
+
+"""""
+aminoAcids= {'A':0 ,'R':1,'N':2,'D':3,'C':4,'Q':5,'E':6,'G':6,'H':7,'I':8,'L':9,'K':10,'M':11,'F':12,'P':13,'S':14,'T':15,'W ':16,'Y':17,'V':18,'B':19,'Z':20,'X':21}
+code = 0
+for i in range(len(oppp)):
+    code += aminoAcids[oppp[i]] * 20**(len(oppp)-(i+1))
+print (code)
+""""""
+for  p in range (words)
+    for t in range (wordlength):
+
+        for u in range (20):
+
+
+opp=[]
+for w in range(len(Modified)-wordlength-1 ):
+    for m in range(len(Modified)) :
+        opp.append(Modified[m] + Modified[m+1] + Modified[m+3])
+print(opp)
+
+
+for m in range(len(Modified)- wordlength - 1):
+    count = m
+    for j in range(wordlength):
+        listofwords[j].append(Modified[count])
+        count=count+1
+
+
+
+    listofwordso.append(listofwords)
+    print(listofwordso)
+#permutations
+for m in range(len(Modified)- wordlength - 1):
+    count = m
+    for j in range(wordlength):
+
+        word = Modified[count]
+        listofwords.append(word)
+        count=count+1
+
+
+    stringgg= listofwords
+    listofwordso.append(stringgg)
+    print(listofwordso)
+
+list=['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W ','Y','B']
+for h in range(wordlength):
+    for k in range (20):
+
+# seeds(threa, word, index)
+"""
+
+
+
