@@ -1,146 +1,162 @@
-
-with open ('blosom.txt','r') as in_file:
+import numpy as np
+import pandas as pd
+"""
+with open ('Blosum62 (1).txt','r') as in_file:
  lines = in_file.read().splitlines()
  in_file.close
- Query = ['A','T','A','T','T','C','D','H']
- threa=3
-
- #seeds = ['ATC', 'CGA', 'ATC', 'GAT', 'CGA', 'TCG']
  aminoAcids= {'A':0 ,'R':1,'N':2,'D':3,'C':4,'Q':5,'E':6,'G':6,'H':7,'I':8,'L':9,'K':10,'M':11,'F':12,'P':13,'S':14,'T':15,'W ':16,'Y':17,'V':18,'B':19,'Z':20,'X':21}
+ Query = ['A', 'T', 'A', 'T', 'T', 'C', 'D', 'H']
+ Dict_Blosum = {}
+ BlosumList = []
+ for line in lines:
+     temp = [int(i) for i in line.split()]
+     BlosumList.append(temp)
+"""
+#replaces repetion with XS
+def listofXinsteadofrepetion (Query):
+  removedtlist=[]
 
-wordlength=3
-def getscore(a1,a2):
-    i = aminoAcids[a1]
-    j = aminoAcids[a2]
+  removedtlist.append(Query[0])
+  removedtlist.append(Query[1])
+  for n in range (0,len(Query)-2,2):
 
-    return BlosumList[i][j]
-
-Dict_Blosum = {}
-BlosumList = []
-print (lines)
-print(len(lines))
-#score with itself
-for line in lines:
-    temp = [int(i) for i in line.split()]
-    BlosumList.append(temp)
-#print (BlosumList)
-lastscor=[]
-
-for i in range (len(Query)):
-
-   scorelist=[]
-   s= Query[i]
-   scorelist=(getscore(s,s))
-   lastscor.append(scorelist)
-#print(lastscor)
-
-#repetion
-
-
-Query = ['A','T','C','Y','T','C','D','H']
-
-removedtlist=[]
-
-removedtlist.append(Query[0])
-removedtlist.append(Query[1])
-for n in range (0,len(Query)-2,2):
-
-  if(lastscor[n]==lastscor[n+2] & lastscor[n+1]== lastscor[n+3]):
+   if(lastscor[n]==lastscor[n+2] & lastscor[n+1]== lastscor[n+3]):
       removedtlist.append('X')
       removedtlist.append('X')
 
-  else:
+   else:
       removedtlist.append(Query[n+2])
       removedtlist.append(Query[n+3])
+  return removedtlist
 
-#print(removedtlist)
-Modified=[]
-for o in range (len(Query)):
-    if (removedtlist[o]!= 'X'):
-        Modified.append(Query[o] )
-#print (Modified)
-listofwords=[]
-listofwordso=[]
-#cutting world length
-words=[]
-oppp = ""
-for i in range(len(Modified) - wordlength+ 1):
-    oppp = Modified[i]
-    for j in range(1, wordlength):
-        oppp += Modified[i + j]
-    words.append(oppp)
-print (words)
-print(oppp)
-#seeds
-Threshold = 2
-Seeds = []
-for i in range(0, len(words)):
-    list = ['A', 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W ', 'Y', 'B']
-    stringside = list(words[i][0])
-    seedcount= list(words[i][0])
-    for k in range(0, len(seedcount)):
-       for j in range(0, len(list)):
-            stringside[k] = list[j]
-            Score = aminoAcids[s[0]][stringside[0]] +aminoAcids[s[1]][stringside[1]] + aminoAcids[s[2]][stringside[2]]
+#repetiton removing
+def modificationofquery(removedtlist):
+    Modified =[]
+    for o in range (len(Query)):
+        if (removedtlist[o]!= 'X'):
+            Modified.append(Query[o] )
 
-            if Score >= Threshold:
-                Seeds.append(["".join(stringside), words[i][1], Score])
-
-       stringside = seedcount
-print(Seeds)
+    return Modified
 
 
+#words extraction
+def words(Modified, wordlength):
+    listofwords = []
 
-"""""
-aminoAcids= {'A':0 ,'R':1,'N':2,'D':3,'C':4,'Q':5,'E':6,'G':6,'H':7,'I':8,'L':9,'K':10,'M':11,'F':12,'P':13,'S':14,'T':15,'W ':16,'Y':17,'V':18,'B':19,'Z':20,'X':21}
-code = 0
-for i in range(len(oppp)):
-    code += aminoAcids[oppp[i]] * 20**(len(oppp)-(i+1))
-print (code)
-""""""
-for  p in range (words)
-    for t in range (wordlength):
+    for i in range(0, len(Modified) - (wordlength - 1)):
+        word = Modified[i:wordlength + i]
+        listofwords.append([word, i])
+    return listofwords
 
-        for u in range (20):
+def seedextraction(listofwords,threshold):
+    Seeds = []
+    for i in range(0, len(words)):
+       oneword=list(listofwords[i][0])
+       s = list(listofwords[i][0])
+       for k in range(0, len(s)):
+          for j in range(0, len(list)):
+            oneword[k] = list[j]
+            score = getscore(oneword, s)
+            Score = getscore[s[0]][oneword[0]] + getscore[s[1]][oneword[1]] + getscore[s[2]][oneword[2]]
+            if Score >= threshold:
+                Seeds.append(["".join(oneword),Score , listofwords[i][1]])
 
+            CompareString = s
 
-opp=[]
-for w in range(len(Modified)-wordlength-1 ):
-    for m in range(len(Modified)) :
-        opp.append(Modified[m] + Modified[m+1] + Modified[m+3])
-print(opp)
-
-
-for m in range(len(Modified)- wordlength - 1):
-    count = m
-    for j in range(wordlength):
-        listofwords[j].append(Modified[count])
-        count=count+1
+    return Seeds
 
 
 
-    listofwordso.append(listofwords)
-    print(listofwordso)
-#permutations
-for m in range(len(Modified)- wordlength - 1):
-    count = m
-    for j in range(wordlength):
-
-        word = Modified[count]
-        listofwords.append(word)
-        count=count+1
 
 
-    stringgg= listofwords
-    listofwordso.append(stringgg)
-    print(listofwordso)
+def hit_seed(seeds, dbseq):
+    hitList = []
+    for i in range(0, len(seeds)):
+        seed_letter = seeds[i][0]
+        for j in range(0, len(dbseq)):
+            if dbseq[j:j + 3] == seed_letter:
+                hitList.append([i, j])
+    return hitList
 
-list=['A','R','N','D','C','Q','E','G','H','I','L','K','M','F','P','S','T','W ','Y','B']
-for h in range(wordlength):
-    for k in range (20):
 
-# seeds(threa, word, index)
-"""
+def getscore(a1, a2):
+    i = aminoAcids[a1]
+    j = aminoAcids[a2]
+    return BlosumList[i][j]
+
+
+def Extend(hit_list, dbseq):
+    hsp = []
+    print(hit_list)
+    threshold = 5
+    for i in range(0, len(hit_list)):
+
+        leftIndex = hit_list[i][1] - 1
+        rightIndex = leftIndex + 4
+        seedIndex = hit_list[i][0]
+        leftIndexQuery = seeds[seedIndex][2] - 1
+        rightIndexQuery = leftIndexQuery + 4
+        score = seeds[seedIndex][1]
+        mxScore = score
+        while (mxScore - score < threshold):
+            if leftIndex >= 0 and leftIndexQuery >= 0:
+                score += getscore(dbseq[leftIndex], Query[leftIndexQuery])
+                leftIndexQuery -= 1
+                leftIndex -= 1
+
+            if rightIndex < len(dbseq) and rightIndexQuery < len(Query):
+                score += getscore(dbseq[rightIndex], Query[rightIndexQuery])
+                rightIndex += 1
+                rightIndexQuery += 1
+            # if leftIndexQuery < 0:
+            if rightIndexQuery >= len(Query) or rightIndex >= len(dbseq):
+                break
+            # if leftIndex < 0:
+            if rightIndex >= len(Query) or rightIndexQuery >= len(Query):
+                break
+            if mxScore < score:
+                mxScore = score
+        hsp.append([rightIndex - 1, leftIndex + 1, rightIndexQuery - 1, leftIndexQuery + 1, score])
+    return hsp
+
+
+
+with open ('Blosum62.txt','r') as in_file:
+ lines = in_file.read().splitlines()
+ in_file.close
+ aminoAcids= {'A':0 ,'R':1,'N':2,'D':3,'C':4,'Q':5,'E':6,'G':6,'H':7,'I':8,'L':9,'K':10,'M':11,'F':12,'P':13,'S':14,'T':15,'W ':16,'Y':17,'V':18,'B':19,'Z':20,'X':21}
+ Query = ['A', 'T', 'A', 'T', 'T', 'C', 'D', 'H']
+ Dict_Blosum = {}
+ BlosumList = []
+ for line in lines:
+     temp = [int(i) for i in line.split()]
+     BlosumList.append(temp)
+
+# print (BlosumList)
+lastscor = []
+threshold=3
+removedlistcopy=listofXinsteadofrepetion(Query)
+modified=modificationofquery(removedlistcopy)
+listofwords=words(modified)
+seeds=seedextraction(listofwords,threshold)
+db = ['ATCCGATCGATCGATCGATCG', 'ATCCGATCGATCGATCGATCG']
+for index, dbseq in enumerate(db):
+    hit_list = hit_seed(seeds, dbseq)
+    print(hit_list)
+    hsp_List = Extend(hit_list, dbseq)
+    print(hsp_List)
+    if len(hsp_List) == 0:
+        print ("Query Not found ")
+    else:
+        total_hsp = 0
+        for i in range(0, len(hsp_List)):
+            total_hsp += hsp_List[i][4]
+        print('seq', index + 1, ':')
+        print(total_hsp)
+Query=input ("please enter the query")
+wordlength=input("please enter the word length")
+threshold=input("enter the first threshold")
+threshold2=input ("enter the second threshold")
 
 
 
