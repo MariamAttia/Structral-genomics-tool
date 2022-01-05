@@ -80,22 +80,20 @@ def seedextraction(listofwords,threshold):
 
 
 
-def hit_seed(seeds, dbseq):
+def hit_seed(seeds, db,wordlength):
     hitList = []
     for i in range(0, len(seeds)):
         seed_letter = seeds[i][0]
-        for j in range(0, len(dbseq)):
-            if dbseq[j:j + 3] == seed_letter:
+        for j in range(0, len(db)):
+            if db[j:j + wordlength] == seed_letter:
                 hitList.append([i, j])
     return hitList
 
 
 
-
-def Extend(hit_list, dbseq,seeds,Query):
+def Extend(hit_list, db,seeds,Query):
     hsp = []
-    print(hit_list)
-    threshold = 5
+
     for i in range(0, len(hit_list)):
 
         leftIndex = hit_list[i][1] - 1
@@ -105,21 +103,24 @@ def Extend(hit_list, dbseq,seeds,Query):
         rightIndexQuery = leftIndexQuery + 4
         score = seeds[seedIndex][1]
         mxScore = score
-        while (mxScore - score < threshold):
+        while (mxScore - score < threshold2): #terminating condition
             if leftIndex >= 0 and leftIndexQuery >= 0:
-                score += getscore(dbseq[leftIndex], Query[leftIndexQuery])
+                score += getscore(db[leftIndex], Query[leftIndexQuery])
                 leftIndexQuery -= 1
                 leftIndex -= 1
 
-            if rightIndex < len(dbseq) and rightIndexQuery < len(Query):
-                score += getscore(dbseq[rightIndex], Query[rightIndexQuery])
+# ata2ked eno ma5les4y
+            if rightIndex < len(db) and rightIndexQuery < len(Query):
+                score += getscore(db[rightIndex], Query[rightIndexQuery])
                 rightIndex += 1
                 rightIndexQuery += 1
+
+            #yemen hwa elmkamel we el4emal mafe4 gambo haga
             # if leftIndexQuery < 0:
-            if rightIndexQuery >= len(Query) or rightIndex >= len(dbseq):
+            if rightIndexQuery >= len(Query) or rightIndex >= len(db): #len query 5eles
                 break
             # if leftIndex < 0:
-            if rightIndex >= len(Query) or rightIndexQuery >= len(Query):
+            if rightIndex >= len(db) or rightIndexQuery >= len(Query):
                 break
             if mxScore < score:
                 mxScore = score
@@ -146,18 +147,16 @@ Querybefore=input ("please enter the query")
 Query=split(Querybefore)
 
 
-print("please enter the word length")
+print("Please Enter The Word Length  : ")
 wordlengthstr=input()
 wordlength=int(wordlengthstr)
-threshold=int(input("enter the first threshold"))
-threshold2=int(input ("enter the second threshold"))
+threshold=int(input("Enter the Word Threshold : "))
+threshold2=int(input ("Enter HSP Threshold : "))
 removedlistcopy=listofXinsteadofrepetion(Query)
 
 
 modified=modificationofquery(removedlistcopy)
 listofwordss=words(modified,wordlength)
-
-#print (listofwordss)
 
 seeds=seedextraction(listofwordss,threshold)
 print(seeds)
@@ -167,16 +166,14 @@ print(len(seeds))
 
 db = ['ATCCGATCGATCGATCGATCG', 'ATCCGATCGATCGATCGATCG']
 for index, dbseq in enumerate(db):
-    hit_list = hit_seed(seeds, dbseq)
-    print(hit_list)
+    hit_list = hit_seed(seeds, dbseq,wordlength)
+    print("Hit_List : ",hit_list)
     hsp_List = Extend(hit_list, dbseq,seeds,Query)
-    print(hsp_List)
+    print("Hsp_List : ",hsp_List)
     if len(hsp_List) == 0:
         print ("Query Not found ")
     else:
         total_hsp = 0
         for i in range(0, len(hsp_List)):
             total_hsp += hsp_List[i][4]
-        print('seq', index + 1, ':')
-        #print(total_hsp)
-
+        print('seq', index + 1, ':', total_hsp)
