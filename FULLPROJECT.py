@@ -1,8 +1,4 @@
-
-        
-        
-        
-#Mariam Mohamed Attia
+# Mariam Mohamed Attia
 # Habiba Mohamed Galal
 # jana hany Ahmed
 # Ganna allah Ashraf  Mohamed
@@ -20,6 +16,11 @@ def listofXinsteadofrepetion(Query):
               if  getscore(Query[n + 1],Query[n + 1]) == getscore(Query[n + 3], Query[n + 3]):
                   removedtlist.append('X')
                   removedtlist.append('X')
+              else:
+
+                   removedtlist.append(Query[n+2])
+                   removedtlist.append(Query[n+3])
+
         else:
 
             removedtlist.append(Query[n+2])
